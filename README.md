@@ -5,7 +5,7 @@ Bu repo, Vite + React ile hazırlanmış Bohem Perde web sitesini gerçek bir PH
 ## Kurulum Adımları
 
 1. **Veritabanı**
-   - `database.sql` dosyasını phpMyAdmin veya MySQL üzerinden içe aktarın. Şema otomatik olarak `u220042353_bohem_data` adlı veritabanını oluşturur.
+   - `database.sql` dosyasını phpMyAdmin veya MySQL üzerinden içe aktarın. Şema otomatik olarak `u220042353_bohem_data` adlı veritabanını oluşturur ve daha önce React tarafında bulunan tüm kategoriler, ürünler, görseller, renkler ve hero slider içeriklerini hazır olarak ekler.
    - Varsayılan admin kullanıcı: `admin` / `admin123` (şifre `password_hash` ile üretilmiştir).
 
 2. **PHP Backend**
@@ -15,8 +15,8 @@ Bu repo, Vite + React ile hazırlanmış Bohem Perde web sitesini gerçek bir PH
 
 3. **Frontend**
    - Geliştirme için: `npm install` ve `npm run dev`.
-   - Canlıya almak için: `npm run build` çıktısını (oluşan `dist/` klasörü içindeki `index.html` ve `assets/` dosyalarıyla birlikte) sunucunuzun public dizinine gönderin.
-   - API adresini `.env` ile değiştirebilirsiniz: `VITE_API_BASE_URL=https://alanadiniz.com/api`.
+   - Canlıya almak için: `npm run build` çıktısını (oluşan `dist/` klasörü içindeki `index.html` ve `assets/` dosyalarıyla birlikte) sunucunuzun public dizinine gönderin. Tarayıcının `/admin` ve `/admin/dashboard` yollarını da çözebilmesi için Hostinger’da SPA yönlendirmesini (örn. .htaccess ile `RewriteRule . index.html [L]`) açmanız yeterlidir.
+   - API adresini `.env` ile değiştirebilirsiniz: `VITE_API_BASE_URL=https://bohemperde.com/api` (aynı domaindeki `/api` path’ini kullanıyorsanız varsayılanı koruyabilirsiniz).
 
 4. **Admin Paneli**
    - Giriş adresi: `/admin`
