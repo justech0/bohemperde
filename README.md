@@ -5,17 +5,17 @@ Bu repo, Vite + React ile hazırlanmış Bohem Perde web sitesini gerçek bir PH
 ## Kurulum Adımları
 
 1. **Veritabanı**
-   - `database.sql` dosyasını phpMyAdmin veya MySQL üzerinden içe aktarın. Şema otomatik olarak `bohemperde` adlı veritabanını oluşturur.
+   - `database.sql` dosyasını phpMyAdmin veya MySQL üzerinden içe aktarın. Şema otomatik olarak `u220042353_bohem_data` adlı veritabanını oluşturur.
    - Varsayılan admin kullanıcı: `admin` / `admin123` (şifre `password_hash` ile üretilmiştir).
 
 2. **PHP Backend**
-   - `api/config/db.php` içindeki veritabanı bilgilerini sunucunuza göre güncelleyin (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
+   - `api/config/db.php` varsayılan olarak aşağıdaki bilgilerle gelir: veritabanı `u220042353_bohem_data`, kullanıcı `u220042353_bohem_admin`, şifre `Bohem7212.` (gerekirse ortam değişkenleri ile override edebilirsiniz).
    - `api` klasörünü PHP barındırma ortamınıza (örneğin `https://alanadiniz.com/api`) yükleyin.
    - `uploads/` klasörü yoksa PHP uçları otomatik oluşturur; yazma izinlerini verin.
 
 3. **Frontend**
    - Geliştirme için: `npm install` ve `npm run dev`.
-   - Canlıya almak için: `npm run build` çıktısını sunucunuzun public dizinine gönderin.
+   - Canlıya almak için: `npm run build` çıktısını (oluşan `dist/` klasörü içindeki `index.html` ve `assets/` dosyalarıyla birlikte) sunucunuzun public dizinine gönderin.
    - API adresini `.env` ile değiştirebilirsiniz: `VITE_API_BASE_URL=https://alanadiniz.com/api`.
 
 4. **Admin Paneli**

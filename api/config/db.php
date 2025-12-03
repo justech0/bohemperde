@@ -1,8 +1,8 @@
 <?php
 $DB_HOST = getenv('DB_HOST') ?: 'localhost';
-$DB_NAME = getenv('DB_NAME') ?: 'bohemperde';
-$DB_USER = getenv('DB_USER') ?: 'root';
-$DB_PASS = getenv('DB_PASS') ?: '';
+$DB_NAME = getenv('DB_NAME') ?: 'u220042353_bohem_data';
+$DB_USER = getenv('DB_USER') ?: 'u220042353_bohem_admin';
+$DB_PASS = getenv('DB_PASS') ?: 'Bohem7212.';
 $DB_CHARSET = 'utf8mb4';
 
 function get_db_connection() {

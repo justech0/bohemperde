@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Phone, Mail, MapPin, ChevronRight, MessageCircle } from 'lucide-react';
-import { SITE_CONFIG, CATEGORIES } from '../constants';
+import { SITE_CONFIG, API_BASE_URL } from '../constants';
+import { Category } from '../types';
 
 const Footer: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories/list.php`);
+        const json = await res.json();
+        if (json?.success && Array.isArray(json.data)) {
+          setCategories(json.data);
+        }
+      } catch (error) {
+        console.error('Kategoriler yüklenirken hata oluştu', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <footer className="bg-bohem-paper dark:bg-zinc-950 border-t border-bohem-stone dark:border-zinc-800 pt-20 pb-10 transition-colors duration-300">
       <div className="container mx-auto px-4 md:px-8">
@@ -52,7 +71,7 @@ const Footer: React.FC = () => {
               <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-bohem-gold dark:bg-white md:left-0 left-1/2 md:translate-x-0 -translate-x-1/2"></span>
             </h4>
             <ul className="space-y-3">
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <li key={cat.id}>
                   <Link to={`/products?category=${cat.id}`} className="text-bohem-text dark:text-zinc-400 hover:text-bohem-gold dark:hover:text-white transition-colors flex items-center justify-center md:justify-start gap-1">
                     <ChevronRight size={14} /> {cat.name}
