@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import HeroSlider from '../components/HeroSlider';
-import { CATEGORIES } from '../constants';
+import { API_BASE_URL } from '../constants';
 import { Link } from 'react-router-dom';
 import { Ruler, Truck, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Category } from '../types';
 
 const Home: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories/list.php`);
+        const json = await res.json();
+        if (json.success) {
+          setCategories(json.data || []);
+        }
+      } catch (error) {
+        console.error('Kategoriler alınamadı', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <div className="animate-fade-in bg-bohem-light dark:bg-black transition-colors duration-300">
       <HeroSlider />
 
-      {/* Categories Section */}
       <section className="py-24 container mx-auto px-4 md:px-8">
         <div className="text-center mb-16">
           <h2 className="brand-font text-5xl md:text-6xl text-bohem-dark dark:text-white mb-6">Koleksiyonlar</h2>
@@ -19,14 +36,14 @@ const Home: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <Link to={`/products?category=${cat.id}`} key={cat.id} className="group relative overflow-hidden h-96 rounded-[2rem] shadow-md hover:shadow-xl transition-all duration-500 border border-bohem-stone/50 dark:border-zinc-800">
-              <div 
+              <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
                 style={{ backgroundImage: `url(${cat.image})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-bohem-dark/90 via-bohem-dark/20 to-transparent dark:from-black/90 dark:via-black/40 opacity-70 group-hover:opacity-85 transition-opacity duration-300" />
-              
+
               <div className="absolute bottom-0 left-0 right-0 p-8 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 <h3 className="brand-font text-3xl mb-2 text-bohem-light">{cat.name}</h3>
                 <p className="text-bohem-paper text-sm font-light opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
@@ -39,7 +56,6 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Steps / Value Prop */}
       <section className="bg-bohem-paper dark:bg-zinc-950 py-24 border-y border-bohem-stone dark:border-zinc-900 transition-colors duration-300">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -74,21 +90,18 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-28 container mx-auto px-4 text-center bg-bohem-light dark:bg-black transition-colors duration-300">
         <div className="max-w-5xl mx-auto bg-bohem-paper dark:bg-zinc-900 text-bohem-dark dark:text-white rounded-[3rem] p-12 md:p-24 relative overflow-hidden shadow-xl border border-bohem-stone dark:border-zinc-800">
-          {/* Decorative circles */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-white/60 dark:bg-zinc-700/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-bohem-gold/10 dark:bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
-          
-          <div className="relative z-10">
-            <h2 className="brand-font text-5xl md:text-7xl mb-8 text-bohem-dark dark:text-white tracking-tight">Hayalinizdeki Perdeyi Tasarlayalım</h2>
-            <p className="text-bohem-text dark:text-zinc-300 mb-12 max-w-xl mx-auto text-xl font-light leading-relaxed">
-              Ev dekorasyonunda fark yaratmak için bizimle iletişime geçin, size özel seçenekleri sunalım.
+          <div className="absolute -left-16 -top-16 w-64 h-64 bg-bohem-gold/10 rounded-full blur-3xl" />
+          <div className="absolute -right-10 bottom-0 w-72 h-72 bg-bohem-dark/10 dark:bg-white/5 rounded-full blur-3xl" />
+          <div className="relative">
+            <h3 className="brand-font text-4xl md:text-5xl mb-6">Yeni Sezon Koleksiyonlarımızı Keşfedin</h3>
+            <p className="text-lg text-bohem-text dark:text-zinc-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+              Bohem tarzın sıcak dokusunu modern çizgilerle buluşturduğumuz yeni sezon ürünlerimizi görmek için mağazamıza bekliyoruz.
             </p>
-            <Link to="/contact" className="inline-flex items-center gap-3 px-10 py-5 bg-bohem-dark dark:bg-white text-white dark:text-black hover:bg-bohem-gold dark:hover:bg-zinc-200 transition-all duration-300 rounded-full font-bold tracking-wide shadow-lg transform hover:-translate-y-1 text-lg">
-              <span>Hemen Teklif Al</span>
-              <ArrowRight size={22} />
+            <Link to="/contact" className="inline-flex items-center gap-2 bg-bohem-gold hover:bg-bohem-dark text-white px-8 py-3 rounded-full font-semibold shadow-lg shadow-bohem-gold/30 transition-all">
+              Randevu Al
+              <ArrowRight size={18} />
             </Link>
           </div>
         </div>

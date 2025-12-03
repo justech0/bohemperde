@@ -1,0 +1,76 @@
+CREATE DATABASE IF NOT EXISTS bohemperde CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bohemperde;
+
+-- Categories table
+CREATE TABLE IF NOT EXISTS categories (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) NOT NULL UNIQUE,
+  image VARCHAR(255) NULL,
+  description TEXT NULL,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Products table
+CREATE TABLE IF NOT EXISTS products (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  category_id INT UNSIGNED NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) NOT NULL UNIQUE,
+  description TEXT NOT NULL,
+  price DECIMAL(10,2) NULL,
+  is_new TINYINT(1) DEFAULT 0,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_products_category_id (category_id),
+  CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Product images table
+CREATE TABLE IF NOT EXISTS product_images (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id INT UNSIGNED NOT NULL,
+  image_path VARCHAR(255) NOT NULL,
+  sort_order TINYINT UNSIGNED DEFAULT 1,
+  INDEX idx_product_images_product_id (product_id),
+  CONSTRAINT fk_product_images_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Product colors table
+CREATE TABLE IF NOT EXISTS product_colors (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id INT UNSIGNED NOT NULL,
+  color_name VARCHAR(100) NOT NULL,
+  INDEX idx_product_colors_product_id (product_id),
+  CONSTRAINT fk_product_colors_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Hero slides table
+CREATE TABLE IF NOT EXISTS hero_slides (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  image_path VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  subtitle TEXT NULL,
+  cta_text VARCHAR(100) NULL,
+  cta_link VARCHAR(255) NULL,
+  sort_order INT UNSIGNED DEFAULT 1,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Admin users table
+CREATE TABLE IF NOT EXISTS admin_users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Seed admin user
+INSERT INTO admin_users (username, password_hash) VALUES
+('admin', '$2y$12$7jTRAu0eqBzj57AtE5P9R.C/OdXLbo4uG8oSPahB0RKrlo87BPB46')
+ON DUPLICATE KEY UPDATE username = VALUES(username);

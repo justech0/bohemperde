@@ -1,20 +1,33 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Bohem Perde - PHP + MySQL + React
 
-# Run and deploy your AI Studio app
+Bu repo, Vite + React ile hazırlanmış Bohem Perde web sitesini gerçek bir PHP + MySQL backend ve yönetici paneli ile birlikte sunar.
 
-This contains everything you need to run your app locally.
+## Kurulum Adımları
 
-View your app in AI Studio: https://ai.studio/apps/drive/1poRLoeGR4WVFTiif8eSJhOGKuBX-cJat
+1. **Veritabanı**
+   - `database.sql` dosyasını phpMyAdmin veya MySQL üzerinden içe aktarın. Şema otomatik olarak `bohemperde` adlı veritabanını oluşturur.
+   - Varsayılan admin kullanıcı: `admin` / `admin123` (şifre `password_hash` ile üretilmiştir).
 
-## Run Locally
+2. **PHP Backend**
+   - `api/config/db.php` içindeki veritabanı bilgilerini sunucunuza göre güncelleyin (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`).
+   - `api` klasörünü PHP barındırma ortamınıza (örneğin `https://alanadiniz.com/api`) yükleyin.
+   - `uploads/` klasörü yoksa PHP uçları otomatik oluşturur; yazma izinlerini verin.
 
-**Prerequisites:**  Node.js
+3. **Frontend**
+   - Geliştirme için: `npm install` ve `npm run dev`.
+   - Canlıya almak için: `npm run build` çıktısını sunucunuzun public dizinine gönderin.
+   - API adresini `.env` ile değiştirebilirsiniz: `VITE_API_BASE_URL=https://alanadiniz.com/api`.
 
+4. **Admin Paneli**
+   - Giriş adresi: `/admin`
+   - Yönetim paneli: `/admin/dashboard` (giriş sonrası yönlenir).
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## API Endpoint Özeti
+
+- Auth: `api/auth/login.php`, `api/auth/logout.php`, `api/auth/me.php`
+- Kategori: `api/categories/list.php`, `get.php`, `create.php`, `update.php`, `delete.php`
+- Ürün: `api/products/list.php`, `get.php`, `create.php`, `update.php`, `delete.php`
+- Slider: `api/slides/list.php`, `create.php`, `update.php`, `delete.php`
+- Upload: `api/upload/upload-image.php`
+
+Tüm uçlar JSON döndürür: `{ success: boolean, data?, message?, errors? }` ve yönetici işlemleri için PHP session kontrolü yapılır.
