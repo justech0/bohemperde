@@ -51,6 +51,33 @@ const AdminDashboard: React.FC = () => {
   const [editId, setEditId] = useState<number | null>(null);
   const [colorInput, setColorInput] = useState('');
   const [message, setMessage] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  const imageUrl = (path?: string | null) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const base = API_BASE_URL.replace(/\/$/, '');
+    const cleaned = path.replace(/^\/+/, '');
+    return `${base}/${cleaned}`;
+  };
+
+  const uploadFile = async (file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    setUploading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload/upload-image.php`, {
+        method: 'POST',
+        body: form,
+        credentials: 'include'
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || 'Yükleme başarısız');
+      return json.data?.path as string;
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const fetchAll = async () => {
     try {
@@ -330,10 +357,36 @@ const AdminDashboard: React.FC = () => {
                                     <textarea className="admin-input h-24" value={(formData as ProductForm).description} onChange={e => setFormData({...formData, description: e.target.value})} />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm text-zinc-400">Ürün Görselleri (en fazla 3 URL)</label>
+                                    <label className="text-sm text-zinc-400">Ürün Görselleri (en fazla 3)</label>
                                     {[0,1,2].map(i => (
-                                      <input key={i} className="admin-input" placeholder={`Görsel URL ${i+1}`} value={(formData as ProductForm).images?.[i] || ''} onChange={e => updateImage(i, e.target.value)} />
+                                      <div key={i} className="flex flex-col gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl p-3">
+                                        <div className="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                                          <input
+                                            className="admin-input flex-1"
+                                            placeholder={`Görsel URL ${i+1}`}
+                                            value={(formData as ProductForm).images?.[i] || ''}
+                                            onChange={e => updateImage(i, e.target.value)}
+                                          />
+                                          <label className="inline-flex items-center gap-2 text-xs bg-zinc-800 hover:bg-zinc-700 cursor-pointer px-3 py-2 rounded-lg border border-zinc-700">
+                                            <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                                              const file = e.target.files?.[0];
+                                              if (!file) return;
+                                              try {
+                                                const path = await uploadFile(file);
+                                                updateImage(i, path);
+                                              } catch (err: any) {
+                                                alert(err.message || 'Yükleme başarısız');
+                                              }
+                                            }} />
+                                            Bilgisayardan Seç
+                                          </label>
+                                        </div>
+                                        {((formData as ProductForm).images?.[i]) && (
+                                          <img src={imageUrl((formData as ProductForm).images?.[i])} alt="Önizleme" className="w-full md:w-56 h-32 object-cover rounded-lg border border-zinc-800" />
+                                        )}
+                                      </div>
                                     ))}
+                                    {uploading && <div className="text-xs text-amber-300">Görsel yükleniyor, lütfen bekleyin...</div>}
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm text-zinc-400">Renk Seçenekleri</label>
@@ -355,7 +408,7 @@ const AdminDashboard: React.FC = () => {
                                 </div>
                                 <div className="flex items-center gap-3 pt-2">
                                     <input type="checkbox" id="isActive" className="w-5 h-5 rounded accent-bohem-gold" checked={(formData as ProductForm).is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} />
-                                    <label htmlFor="isActive" className="text-white cursor-pointer select-none">Ürün yayında olsun</label>
+                                    <label htmlFor="isActive" className="text-white cursor-pointer select-none">Ürün stokta olsun</label>
                                 </div>
                             </>
                         )}
@@ -371,8 +424,26 @@ const AdminDashboard: React.FC = () => {
                                     <input className="admin-input" value={(formData as CategoryForm).slug} onChange={e => setFormData({...formData, slug: e.target.value})} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm text-zinc-400">Kapak Görseli URL</label>
-                                    <input className="admin-input" value={(formData as CategoryForm).image} onChange={e => setFormData({...formData, image: e.target.value})} />
+                                    <label className="text-sm text-zinc-400">Kapak Görseli</label>
+                                    <div className="flex flex-col gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl p-3">
+                                        <input className="admin-input" placeholder="URL veya yükleme sonucu" value={(formData as CategoryForm).image} onChange={e => setFormData({...formData, image: e.target.value})} />
+                                        <label className="inline-flex items-center gap-2 text-xs bg-zinc-800 hover:bg-zinc-700 cursor-pointer px-3 py-2 rounded-lg border border-zinc-700">
+                                            <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                try {
+                                                    const path = await uploadFile(file);
+                                                    setFormData({ ...formData, image: path });
+                                                } catch (err: any) {
+                                                    alert(err.message || 'Yükleme başarısız');
+                                                }
+                                            }} />
+                                            Bilgisayardan Seç
+                                        </label>
+                                        {(formData as CategoryForm).image && (
+                                            <img src={imageUrl((formData as CategoryForm).image)} alt="Kategori" className="w-full md:w-56 h-32 object-cover rounded-lg border border-zinc-800" />
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm text-zinc-400">Kısa Açıklama</label>
@@ -396,12 +467,26 @@ const AdminDashboard: React.FC = () => {
                                     <input className="admin-input" value={(formData as SlideForm).subtitle} onChange={e => setFormData({...formData, subtitle: e.target.value})} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm text-zinc-400">Arka Plan Görseli URL</label>
-                                    <input className="admin-input" value={(formData as SlideForm).image_path} onChange={e => setFormData({...formData, image_path: e.target.value})} />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm text-zinc-400">Veya Görsel Yükle</label>
-                                    <input type="file" accept="image/*" className="admin-input" onChange={e => setFormData({...formData, file: e.target.files?.[0] || null})} />
+                                    <label className="text-sm text-zinc-400">Arka Plan Görseli</label>
+                                    <div className="flex flex-col gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl p-3">
+                                        <input className="admin-input" placeholder="URL veya yükleme sonucu" value={(formData as SlideForm).image_path} onChange={e => setFormData({...formData, image_path: e.target.value})} />
+                                        <label className="inline-flex items-center gap-2 text-xs bg-zinc-800 hover:bg-zinc-700 cursor-pointer px-3 py-2 rounded-lg border border-zinc-700">
+                                            <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                try {
+                                                    const path = await uploadFile(file);
+                                                    setFormData({ ...formData, image_path: path, file: null });
+                                                } catch (err: any) {
+                                                    alert(err.message || 'Yükleme başarısız');
+                                                }
+                                            }} />
+                                            Bilgisayardan Seç
+                                        </label>
+                                        {(formData as SlideForm).image_path && (
+                                            <img src={imageUrl((formData as SlideForm).image_path)} alt="Slide" className="w-full md:w-64 h-36 object-cover rounded-lg border border-zinc-800" />
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
@@ -451,7 +536,7 @@ const AdminDashboard: React.FC = () => {
                                 {activeTab === 'products' && products.map(p => (
                                     <tr key={p.id} className="hover:bg-zinc-800/50 transition-colors">
                                         <td className="p-4">
-                                            <img src={p.images?.[0]?.image_path} alt="" className="w-12 h-12 rounded object-cover bg-zinc-800" />
+                                            <img src={imageUrl(p.images?.[0]?.image_path)} alt="" className="w-12 h-12 rounded object-cover bg-zinc-800" />
                                         </td>
                                         <td className="p-4 font-medium text-white">{p.name} {p.is_new ? <span className="ml-2 text-[10px] bg-bohem-gold text-black px-2 py-0.5 rounded-full">YENİ</span> : null}</td>
                                         <td className="p-4 text-zinc-400">{categories.find(c => c.id === p.category_id)?.name || '-'}</td>
@@ -470,7 +555,7 @@ const AdminDashboard: React.FC = () => {
                                 {activeTab === 'categories' && categories.map(c => (
                                     <tr key={c.id} className="hover:bg-zinc-800/50 transition-colors">
                                         <td className="p-4">
-                                            <img src={c.image} alt="" className="w-12 h-12 rounded object-cover bg-zinc-800" />
+                                            <img src={imageUrl(c.image)} alt="" className="w-12 h-12 rounded object-cover bg-zinc-800" />
                                         </td>
                                         <td className="p-4 font-medium text-white">{c.name}</td>
                                         <td className="p-4 text-right space-x-2">
@@ -483,7 +568,7 @@ const AdminDashboard: React.FC = () => {
                                 {activeTab === 'hero' && slides.map(s => (
                                     <tr key={s.id} className="hover:bg-zinc-800/50 transition-colors">
                                         <td className="p-4">
-                                            <img src={s.image_path} alt="" className="w-24 h-12 rounded object-cover bg-zinc-800" />
+                                            <img src={imageUrl(s.image_path)} alt="" className="w-24 h-12 rounded object-cover bg-zinc-800" />
                                         </td>
                                         <td className="p-4 font-medium text-white">
                                             {s.title}

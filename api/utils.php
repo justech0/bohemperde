@@ -37,3 +37,46 @@ function sanitize_slug($text) {
     $text = preg_replace('/[^a-z0-9-]+/u', '-', iconv('UTF-8', 'ASCII//TRANSLIT', $text));
     return trim($text, '-');
 }
+
+function save_image_as_webp($file, $uploadDir)
+{
+    if (!isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $mime = mime_content_type($file['tmp_name']);
+    $supported = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!in_array($mime, $supported, true)) {
+        return null;
+    }
+
+    switch ($mime) {
+        case 'image/png':
+            $image = imagecreatefrompng($file['tmp_name']);
+            break;
+        case 'image/webp':
+            $image = imagecreatefromwebp($file['tmp_name']);
+            break;
+        default:
+            $image = imagecreatefromjpeg($file['tmp_name']);
+            break;
+    }
+
+    if (!$image) {
+        return null;
+    }
+
+    $baseName = pathinfo($file['name'], PATHINFO_FILENAME);
+    $safeBase = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName);
+    $filename = time() . '_' . $safeBase . '.webp';
+    $target = rtrim($uploadDir, '/\\') . '/' . $filename;
+    imagepalettetotruecolor($image);
+    imagewebp($image, $target, 80);
+    imagedestroy($image);
+
+    return $target;
+}

@@ -23,13 +23,10 @@ try {
     // handle upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../uploads';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        $saved = save_image_as_webp($_FILES['image'], $uploadDir);
+        if ($saved) {
+            $image_path = 'uploads/' . basename($saved);
         }
-        $filename = time() . '_' . basename($_FILES['image']['name']);
-        $target = $uploadDir . '/' . $filename;
-        move_uploaded_file($_FILES['image']['tmp_name'], $target);
-        $image_path = 'uploads/' . $filename;
     }
 
     if (!$image_path) {

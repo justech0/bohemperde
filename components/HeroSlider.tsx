@@ -15,7 +15,10 @@ const HeroSlider: React.FC = () => {
         const res = await fetch(`${API_BASE_URL}/slides/list.php?active=1`);
         const json = await res.json();
         if (json.success) {
-          setSlides(json.data || []);
+          setSlides((json.data || []).map((s: any) => ({
+            ...s,
+            image_path: s.image_path?.startsWith('http') ? s.image_path : `${API_BASE_URL.replace(/\/$/, '')}/${(s.image_path || '').replace(/^\/+/, '')}`
+          })));
         }
       } catch (error) {
         console.error('Slider yüklenemedi', error);

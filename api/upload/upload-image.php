@@ -16,14 +16,11 @@ if ($file['error'] !== UPLOAD_ERR_OK) {
 }
 
 $uploadDir = __DIR__ . '/../uploads';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
-}
-$filename = time() . '_' . basename($file['name']);
-$target = $uploadDir . '/' . $filename;
+$savedPath = save_image_as_webp($file, $uploadDir);
 
-if (!move_uploaded_file($file['tmp_name'], $target)) {
-    json_response(false, null, 'Dosya taşınamadı', 500);
+if (!$savedPath) {
+    json_response(false, null, 'Desteklenmeyen dosya türü veya dönüştürülemedi', 400);
 }
 
-json_response(true, ['path' => 'uploads/' . $filename], 'Yüklendi');
+$publicPath = 'uploads/' . basename($savedPath);
+json_response(true, ['path' => $publicPath], 'Yüklendi');

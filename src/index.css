@@ -48,3 +48,24 @@ html.dark ::selection {
   opacity: 0;
   transition: opacity 1000ms ease-in-out;
 }
+
+.admin-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: #0f0f14;
+  border: 1px solid #26262f;
+  color: #f4f4f5;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-input:focus {
+  border-color: #c5a065;
+  box-shadow: 0 0 0 2px rgba(197, 160, 101, 0.2);
+}
+
+.admin-input::placeholder {
+  color: #7f7f87;
+}
