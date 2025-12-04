@@ -14,8 +14,15 @@ Bu repo, Vite + React ile hazırlanmış Bohem Perde web sitesini gerçek bir PH
    - `uploads/` klasörü yoksa PHP uçları otomatik oluşturur; yazma izinlerini verin.
 
 3. **Frontend**
-   - Geliştirme için: `npm install` ve `npm run dev`.
-   - Canlıya almak için: `npm run build` çıktısını (oluşan `dist/` klasörü içindeki `index.html` ve `assets/` dosyalarıyla birlikte) sunucunuzun public dizinine gönderin. Tarayıcının `/admin` ve `/admin/dashboard` yollarını da çözebilmesi için Hostinger’da SPA yönlendirmesini (örn. .htaccess ile `RewriteRule . index.html [L]`) açmanız yeterlidir.
+   - Geliştirme için: `npm install` ve `npm run dev` (React, react-router-dom ve Tailwind tamamen npm bağımlılıklarıyla bundle edilir; CDN yoktur).
+   - Canlıya almak için: `npm run build` çıktısını (oluşan `dist/` klasörü içindeki `index.html` ve `assets/` dosyalarıyla birlikte) sunucunuzun public dizinine gönderin. Tarayıcının `/admin` ve `/admin/dashboard` yollarını da çözebilmesi için Hostinger’da SPA yönlendirmesini açmanız gerekir; `.htaccess` örneği:
+     ```
+     RewriteEngine On
+     RewriteBase /
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteRule ^ index.html [L]
+     ```
    - API adresini `.env` ile değiştirebilirsiniz: `VITE_API_BASE_URL=https://bohemperde.com/api` (aynı domaindeki `/api` path’ini kullanıyorsanız varsayılanı koruyabilirsiniz).
 
 4. **Admin Paneli**

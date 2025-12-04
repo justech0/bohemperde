@@ -1,88 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bohem Perde | Stil, Işıkla Buluştu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class', // Enabled manual dark mode toggling
-        theme: {
-          extend: {
-            colors: {
-              bohem: {
-                gold: '#c5a065',      // Gilded Gold (richer)
-                dark: '#43302b',      // Deep Warm Brown (instead of black)
-                text: '#5d4e46',      // Soft Earthy Brown (text)
-                light: '#fdfbf7',     // Ivory / Very Light Cream (main bg)
-                paper: '#f4f0e6',     // Warm Beige (cards/sections)
-                stone: '#eaddcf',     // Stone/Sand (borders/accents)
-                border: '#d6cbbd'     // Darker Beige (borders)
-              }
-            },
-            fontFamily: {
-              serif: ['"Gilda Display"', 'serif'],
-              sans: ['"Inter"', 'sans-serif'],
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        /* Default colors handled by React classes, but fallback here */
-        background-color: #fdfbf7; 
-        color: #5d4e46;
-      }
-      /* Dark mode body override */
-      html.dark body {
-        background-color: #000000;
-        color: #e4e4e7; /* zinc-200 */
-      }
-      
-      h1, h2, h3, h4, .brand-font {
-        font-family: 'Gilda Display', serif;
-      }
-      ::selection {
-        background: #c5a065;
-        color: white;
-      }
-      html.dark ::selection {
-        background: #ffffff;
-        color: black;
-      }
-      .fade-enter {
-        opacity: 0;
-      }
-      .fade-enter-active {
-        opacity: 1;
-        transition: opacity 1000ms ease-in-out;
-      }
-      .fade-exit {
-        opacity: 1;
-      }
-      .fade-exit-active {
-        opacity: 0;
-        transition: opacity 1000ms ease-in-out;
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
-  }
-}
-</script>
-</head>
+  </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
