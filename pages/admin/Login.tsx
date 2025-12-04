@@ -1,22 +1,37 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
+import { API_BASE_URL } from '../../constants';
 
 const AdminLogin: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple mock authentication
-    // In a real PHP backend scenario, this would POST to /api/login.php
-    if (username === 'admin' && password === 'admin') {
-      localStorage.setItem('adminAuth', 'true');
-      navigate('/admin/dashboard');
-    } else {
-      setError('Kullanıcı adı veya şifre hatalı!');
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/login.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ username, password })
+      });
+      const json = await res.json();
+      if (json.success) {
+        localStorage.setItem('adminAuth', 'true');
+        navigate('/admin/dashboard');
+      } else {
+        setError(json.message || 'Giriş başarısız');
+      }
+    } catch (err) {
+      setError('Sunucuya bağlanılamadı');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,9 +72,10 @@ const AdminLogin: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-bohem-gold hover:bg-white hover:text-black text-white py-3 rounded-lg font-bold transition-all duration-300"
+            disabled={loading}
+            className="w-full bg-bohem-gold hover:bg-white hover:text-black text-white py-3 rounded-lg font-bold transition-all duration-300 disabled:opacity-50"
           >
-            Giriş Yap
+            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
           </button>
         </form>
 
@@ -67,7 +83,7 @@ const AdminLogin: React.FC = () => {
           <a href="/" className="text-zinc-600 hover:text-white text-sm transition-colors">← Siteye Dön</a>
         </div>
       </div>
-      
+
       <a href="https://bilincreklam.com" target="_blank" rel="noreferrer" className="text-xs text-zinc-600 hover:text-bohem-gold transition-colors font-medium opacity-70 hover:opacity-100">
             Design & Development by Bilinç Reklam
       </a>

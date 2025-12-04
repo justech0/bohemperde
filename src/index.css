@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fdfbf7;
+  color: #5d4e46;
+}
+
+html.dark body {
+  background-color: #000000;
+  color: #e4e4e7;
+}
+
+h1,
+h2,
+h3,
+h4,
+.brand-font {
+  font-family: 'Gilda Display', serif;
+}
+
+::selection {
+  background: #c5a065;
+  color: white;
+}
+
+html.dark ::selection {
+  background: #ffffff;
+  color: black;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 1000ms ease-in-out;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 1000ms ease-in-out;
+}
+
+.admin-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: #0f0f14;
+  border: 1px solid #26262f;
+  color: #f4f4f5;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-input:focus {
+  border-color: #c5a065;
+  box-shadow: 0 0 0 2px rgba(197, 160, 101, 0.2);
+}
+
+.admin-input::placeholder {
+  color: #7f7f87;
+}

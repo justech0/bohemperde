@@ -1,27 +1,39 @@
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   slug: string;
-  image: string;
+  image?: string;
   description?: string;
+  is_active?: number;
+}
+
+export interface ProductImage {
+  id: number;
+  product_id: number;
+  image_path: string;
+  sort_order: number;
 }
 
 export interface Product {
-  id: string;
+  id: number;
   name: string;
-  categoryId: string;
-  price?: number; // Optional as per business model
-  images: string[];
+  slug: string;
+  category_id: number;
   description: string;
+  price?: number;
+  is_new?: number;
+  is_active?: number;
+  images: ProductImage[];
   colors: string[];
-  isNew?: boolean;
 }
 
 export interface Slide {
   id: number;
-  image: string;
+  image_path: string;
   title: string;
-  subtitle: string;
-  ctaText: string;
-  ctaLink: string;
+  subtitle?: string;
+  cta_text?: string;
+  cta_link?: string;
+  sort_order?: number;
+  is_active?: number;
 }
